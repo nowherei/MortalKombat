@@ -1,3 +1,5 @@
+const $arenas = document.querySelector('.arenas');
+
 const player1 = {
   name: 'SCORPION',
   hp: 50,
@@ -24,26 +26,25 @@ function createDiv(className) {
   return $div;
 }
 
-function createPlayer(className, player) {
+function createPlayer(className, {name, hp, img}) {
   const $player = createDiv(className);
 
   const $progressBar = createDiv('progressbar');
   const $life = createDiv('life');
-  $life.style.width = `${player.hp}%`;
+  $life.style.width = `${hp}%`;
   const $name = createDiv('name');
-  $name.innerText = player.name;
+  $name.innerText = name;
   $progressBar.appendChild($life);
   $progressBar.appendChild($name);
 
   const $character = createDiv('character');
   const $img = document.createElement('img');
-  $img.src = player.img;
+  $img.src = img;
   $character.appendChild($img);
 
   $player.appendChild($progressBar);
   $player.appendChild($character);
 
-  $arenas = document.querySelector('.arenas');
   $arenas.appendChild($player);
 }
 
