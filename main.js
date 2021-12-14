@@ -53,22 +53,38 @@ function createPlayer({ player, name, hp, img }) {
   return $player;
 }
 
+function gameOver(id) {
+  const $loseTitle = document.querySelector('.loseTitle');
+
+  if ($loseTitle) {
+    $loseTitle.innerText = 'Draw!';
+    return;
+  }
+
+  let winsPlayer = player1;
+  if (id === 1) {
+    winsPlayer = player2;
+  }
+
+  $arenas.appendChild(showMessage(`${winsPlayer.name} wins`));
+  $randomButton.disabled = true;
+}
+
 function changeHP(player) {
   const $playerLife = document.querySelector(`.player${player.player} .life`);
   player.hp -= numberRandom();
 
   if (player.hp <= 0) {
     player.hp = 0;
-    $arenas.appendChild(playerMessage(player.player === 1 ? player2.name : player1.name));
-    $randomButton.disabled = true;
+    gameOver(player.player);
   }
 
   $playerLife.style.width = player.hp + '%';
 }
 
-function playerMessage(name, text = 'wins') {
+function showMessage(text) {
   const $loseTitle = createElement('div', 'loseTitle');
-  $loseTitle.innerText = `${name} ${text}`;
+  $loseTitle.innerText = text;
 
   return $loseTitle;
 }
@@ -80,9 +96,7 @@ function numberRandom() {
 $randomButton.addEventListener('click', function() {
   console.log('###: Click Random Button');
   changeHP(player1);
-  if (player1.hp > 0) {
-    changeHP(player2);
-  }
+  changeHP(player2);
 });
 
 $arenas.appendChild(createPlayer(player1));
