@@ -63,10 +63,9 @@ function createPlayer({ player, name, hp, img }) {
 function changeHP(number) {
   this.hp -= number;
 
-  if (this.hp <= 0) {
+  if (this.hp < 0) {
     this.hp = 0;
   }
-  this.renderHP();
 }
 
 function elHp() {
@@ -108,6 +107,8 @@ function createReloadButton() {
 $randomButton.addEventListener('click', function() {
   player1.changeHP(getRandom());
   player2.changeHP(getRandom());
+  player1.renderHP();
+  player2.renderHP();
 
   if (player1.hp === 0 || player2.hp === 0) {
     $randomButton.disabled = true;
