@@ -1,5 +1,4 @@
 const $arenas = document.querySelector('.arenas');
-// const $randomButton = document.querySelector('.button');
 const $reloadWrap = createReloadButton();
 const $formFight = document.querySelector('.control');
 
@@ -119,29 +118,6 @@ function createReloadButton() {
   return $reloadWrap;
 }
 
-// $randomButton.addEventListener('click', function() {
-//   player1.changeHP(getRandom());
-//   player2.changeHP(getRandom());
-//   player1.renderHP();
-//   player2.renderHP();
-
-//   if (player1.hp === 0 || player2.hp === 0) {
-//     $randomButton.disabled = true;
-//     $arenas.appendChild($reloadWrap);
-//   }
-
-//   if (player1.hp === 0 && player1.hp < player2.hp) {
-//     $arenas.appendChild(showMessage(player2.name));
-//   } else if (player2.hp === 0 && player2.hp < player1.hp) {
-//     $arenas.appendChild(showMessage(player1.name));
-//   } else if (player1.hp === 0 && player2.hp === 0) {
-//     $arenas.appendChild(showMessage());
-//   }
-// });
-
-$arenas.appendChild(createPlayer(player1));
-$arenas.appendChild(createPlayer(player2));
-
 function enemyAttack() {
   const hit = ATTACK[getRandom(3) - 1];
   const defence = ATTACK[getRandom(3) - 1];
@@ -153,12 +129,7 @@ function enemyAttack() {
   }
 }
 
-$formFight.addEventListener('submit', function(e) {
-  e.preventDefault();
-  // console.dir($formFight);
-  player2.currentAttack = enemyAttack();
-  
-  
+function playerAttack() {
   const attack = {};
 
   for (let item of $formFight) {
@@ -174,23 +145,19 @@ $formFight.addEventListener('submit', function(e) {
     item.checked = false;
   }
 
-  player1.currentAttack = attack;
+  return attack;
+}
 
-  // console.log('### a', attack);
-  // console.log('### e', enemy);
+$arenas.appendChild(createPlayer(player1));
+$arenas.appendChild(createPlayer(player2));
+
+$formFight.addEventListener('submit', function(e) {
+  e.preventDefault();
+  player2.currentAttack = enemyAttack();
+  player1.currentAttack = playerAttack();
 
   player1.attack(player2);
   player2.attack(player1);
-
-  /* if (attack.hit !== enemy.defence) {
-    player2.changeHP(attack.value);
-    player2.renderHP();
-  }
-
-  if (enemy.hit !== attack.defence) {
-    player1.changeHP(enemy.value);
-    player1.renderHP();
-  } */
 
   if (player1.hp === 0 || player2.hp === 0) {
     $arenas.appendChild($reloadWrap);
@@ -204,4 +171,5 @@ $formFight.addEventListener('submit', function(e) {
   } else if (player1.hp === 0 && player2.hp === 0) {
     $arenas.appendChild(showMessage());
   }
+
 });
