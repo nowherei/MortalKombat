@@ -10,7 +10,7 @@ const HIT = {
 };
 const ATTACK = ['head', 'body', 'foot'];
 
-const logs = {
+const LOGS = {
   start:
     'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
   end: [
@@ -163,8 +163,9 @@ function createReloadButton() {
 }
 
 function enemyAttack() {
-  const hit = ATTACK[getRandom(3) - 1];
-  const defence = ATTACK[getRandom(3) - 1];
+  const length = ATTACK.length;
+  const hit = ATTACK[getRandom(length) - 1];
+  const defence = ATTACK[getRandom(length) - 1];
 
   return {
     value: getRandom(HIT[hit]),
@@ -210,11 +211,19 @@ function showResult() {
   }
 }
 
+function generateTimeString(time) {
+  return ('0' + time).slice(-2);
+}
+
 function getTime() {
   const now = new Date();
-  return `${('0' + now.getHours()).slice(-2)}:${('0' + now.getMinutes()).slice(
-    -2
-  )}`;
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+
+  return `${generateTimeString(hours)}:${generateTimeString(
+    minutes
+  )}:${generateTimeString(seconds)}`;
 }
 
 function generateLogs(type, player1, player2) {
@@ -222,32 +231,32 @@ function generateLogs(type, player1, player2) {
   let el, text;
   switch (type) {
     case 'start':
-      text = logs[type]
+      text = LOGS[type]
         .replace('[time]', time)
         .replace('[player1]', player1.name)
         .replace('[player2]', player2.name);
       el = `<p>${text}</p>`;
       break;
     case 'end':
-      text = logs[type][getRandom(logs[type].length) - 1]
+      text = LOGS[type][getRandom(LOGS[type].length) - 1]
         .replace('[playerWins]', player1.name)
         .replace('[playerLose]', player2.name);
       el = `<p>${text}</p>`;
       break;
     case 'hit':
-      text = logs[type][getRandom(logs[type].length) - 1]
+      text = LOGS[type][getRandom(LOGS[type].length) - 1]
         .replace('[playerKick]', player1.name)
         .replace('[playerDefence]', player2.name);
       el = `<p>${time} - ${text} -${player1.currentAttack.value} [${player2.hp}/100]</p>`;
       break;
     case 'defence':
-      text = logs[type][getRandom(logs[type].length) - 1]
+      text = LOGS[type][getRandom(LOGS[type].length) - 1]
         .replace('[playerKick]', player1.name)
         .replace('[playerDefence]', player2.name);
       el = `<p>${time} - ${text}</p>`;
       break;
     case 'draw':
-      el = `<p>${logs.draw}</p>`;
+      el = `<p>${LOGS.draw}</p>`;
       break;
   }
   if (el) {
