@@ -1,6 +1,7 @@
-import { generateLogs } from './utils.js';
+import { generateLogs, createElement } from './utils.js';
+import { $arenas } from './elements.js';
 
-class Player {
+export default class Player {
   constructor(props) {
     this.player = props.player;
     this.name = props.name;
@@ -8,6 +9,34 @@ class Player {
     this.img = props.img;
     this.weapon = props.weapon;
   }
+
+  /**
+   * Функция создает игрока
+   * @param {Object} param0
+   * @returns
+   */
+  createPlayer = () => {
+    const { player, name, hp, img } = this;
+    const $player = createElement('div', `player${player}`);
+    const $progressBar = createElement('div', 'progressbar');
+    const $life = createElement('div', 'life');
+    const $name = createElement('div', 'name');
+    const $character = createElement('div', 'character');
+    const $img = createElement('img');
+
+    $life.style.width = `${hp}%`;
+    $name.innerText = name;
+    $img.src = img;
+
+    $progressBar.appendChild($life);
+    $progressBar.appendChild($name);
+    $character.appendChild($img);
+
+    $player.appendChild($progressBar);
+    $player.appendChild($character);
+
+    $arenas.appendChild($player);
+  };
 
   /**
    * Фукнция атаки соперника
@@ -52,7 +81,7 @@ class Player {
   };
 }
 
-export const player1 = new Player({
+/* export const player1 = new Player({
   player: 1,
   name: 'SCORPION',
   hp: 100,
@@ -66,4 +95,4 @@ export const player2 = new Player({
   hp: 100,
   img: 'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
   weapon: ['Bladed Fans'],
-});
+}); */

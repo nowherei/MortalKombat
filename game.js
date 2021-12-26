@@ -1,19 +1,33 @@
 import { HIT, ATTACK } from './constants.js';
-import { player1, player2 } from './player.js';
+import Player from './player.js';
+import ApiService from './api-service.js';
 import { $arenas, $formFight } from './elements.js';
 import { getRandom, createElement, generateLogs } from './utils.js';
 
+const apiService = new ApiService();
+let player1, player2;
 export default class Game {
-  start = () => {
-    $arenas.appendChild(this.createPlayer(player1));
-    $arenas.appendChild(this.createPlayer(player2));
+  start = async () => {
+    const p2 = await apiService.getRandomPlayer();
+    player1 = new Player({
+      ...JSON.parse(localStorage.getItem('player1')),
+      player: 1,
+    });
+    player2 = new Player({
+      ...p2,
+      player: 2,
+    });
+    player1.createPlayer();
+    player2.createPlayer();
 
     generateLogs('start', player1, player2);
 
-    $formFight.addEventListener('submit', (e) => {
+    $formFight.addEventListener('submit', async (e) => {
       e.preventDefault();
-      player1.currentAttack = this.playerAttack();
-      player2.currentAttack = this.enemyAttack();
+      const playerFight = await apiService.getPlayerFight(this.playerAttack());
+      console.log(playerFight);
+      player1.currentAttack = playerFight.player1;
+      player2.currentAttack = playerFight.player2;
 
       player1.attack(player2);
       player2.attack(player1);
@@ -54,7 +68,7 @@ export default class Game {
 
     $button.innerText = 'Restart';
     $button.addEventListener('click', function () {
-      window.location.reload();
+      window.location.pathname = '';
     });
     $reloadWrap.appendChild($button);
     return $reloadWrap;
@@ -75,33 +89,6 @@ export default class Game {
     }
 
     return $loseTitle;
-  };
-
-  /**
-   * Функция создает игрока
-   * @param {Object} param0
-   * @returns
-   */
-  createPlayer = ({ player, name, hp, img }) => {
-    const $player = createElement('div', `player${player}`);
-    const $progressBar = createElement('div', 'progressbar');
-    const $life = createElement('div', 'life');
-    const $name = createElement('div', 'name');
-    const $character = createElement('div', 'character');
-    const $img = createElement('img');
-
-    $life.style.width = `${hp}%`;
-    $name.innerText = name;
-    $img.src = img;
-
-    $progressBar.appendChild($life);
-    $progressBar.appendChild($name);
-    $character.appendChild($img);
-
-    $player.appendChild($progressBar);
-    $player.appendChild($character);
-
-    return $player;
   };
 
   /**
